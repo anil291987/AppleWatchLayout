@@ -29,7 +29,7 @@
     if (self) {
         _needChangeCache = YES;
         _numberOfColumnsPerRow = 12;
-        _numberOfVisibleColumns = 3;
+        _numberOfVisibleColumns = 4;
     }
     
     return self;
@@ -110,24 +110,30 @@
 {
     NSMutableArray *visibleElements = [NSMutableArray array];
     
+//    CGSize cellSize = [self cellSize];
+//    CGFloat halfBoundsWidth = self.collectionView.bounds.size.width * 0.5;
+    CGFloat sizeScaleNormalize = self.collectionView.bounds.size.width / 1.5;
+    
     for (UICollectionViewLayoutAttributes *attributes in self.attributes) {
         if (CGRectIntersectsRect(attributes.frame, rect)) {
             [visibleElements addObject:attributes];
             
             CGPoint boundsMid = CGPointMake(CGRectGetMidX(self.collectionView.bounds), CGRectGetMidY(self.collectionView.bounds));
             CGPoint visMid = CGPointMake(CGRectGetMidX(attributes.frame), CGRectGetMidY(attributes.frame));
-            CGFloat distX = boundsMid.x - visMid.x;
-            CGFloat distY = boundsMid.y - visMid.y;
+            CGFloat distX = visMid.x - boundsMid.x;
+            CGFloat distY = visMid.y - boundsMid.y;
             CGFloat dist = sqrt(distX * distX + distY * distY);
-            CGFloat sizeScale = dist / (self.collectionView.bounds.size.width / 1.5);
+            CGFloat sizeScale = dist / sizeScaleNormalize;
+            
+//            CGFloat curve = 0;
+//            CGFloat sign = (distY >= 0)? -1 : 1;
             
             if (sizeScale > 1) sizeScale = 1;
-            
             sizeScale = 1 - sizeScale;
             
+            CGAffineTransform transform = CGAffineTransformMakeScale(sizeScale, sizeScale);
             
-            
-            attributes.transform = CGAffineTransformMakeScale(sizeScale, sizeScale);
+            attributes.transform = transform;
         }
     }
     

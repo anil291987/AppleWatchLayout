@@ -11,7 +11,6 @@
 
 
 @interface TestCell ()
-@property (nonatomic, strong) CAShapeLayer *shapeLayer;
 @end
 
 @implementation TestCell
@@ -23,10 +22,12 @@
         self.contentView.backgroundColor = [UIColor colorWithRed:(arc4random_uniform(128) + 128) / 255.0
                                                            green:(arc4random_uniform(128) + 128) / 255.0
                                                             blue:(arc4random_uniform(128) + 128) / 255.0 alpha:1];
-        CAShapeLayer *shapeLayer = [CAShapeLayer layer];
-        shapeLayer.path = [UIBezierPath bezierPathWithOvalInRect:self.bounds].CGPath;
-        self.shapeLayer = shapeLayer;
-        self.contentView.layer.mask = self.shapeLayer;
+        
+        self.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.layer.shadowOffset = CGSizeMake(2, 1);
+        self.layer.shadowOpacity = 0.5;
+        self.layer.shadowRadius = 3;
+        self.layer.allowsEdgeAntialiasing = YES;
     }
     
     return self;
@@ -36,7 +37,7 @@
 {
     [super layoutSubviews];
     
-    self.shapeLayer.path = [UIBezierPath bezierPathWithOvalInRect:self.bounds].CGPath;
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
 }
 
 @end
