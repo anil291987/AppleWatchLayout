@@ -28,111 +28,62 @@
     self = [super init];
     if (self) {
         _needChangeCache = YES;
+        _numberOfColumnsPerRow = 12;
+        _numberOfVisibleColumns = 3;
     }
     
     return self;
 }
 
-- (NSInteger)numberOfElementsPerGrid
+- (CGSize)cellSize
 {
-    return self.numberOfRowsPerGrid * self.numberOfColumnsPerGrid;
-}
-
-- (NSInteger)numberOfGrids
-{
-    NSInteger numberOfElementsPerGrid = [self numberOfElementsPerGrid];
+    CGFloat cellWidth = self.collectionView.bounds.size.width / self.numberOfVisibleColumns;
     
-    return ceil(self.numberOfElements / numberOfElementsPerGrid);
+    return CGSizeMake(cellWidth, cellWidth);
 }
 
-- (NSInteger)numberOfGridRows
+- (NSInteger)numberOfRows
 {
-    NSInteger numberOfGrids = [self numberOfGrids];
-    
-    return ceil(numberOfGrids / self.numberOfGridsPerRow);
+    return ceil([self.collectionView numberOfItemsInSection:0] / self.numberOfColumnsPerRow);
 }
 
-- (CGFloat)gridWidth
+- (void)setNumberOfColumnsPerRow:(NSInteger)numberOfColumnsPerRow
 {
-    return self.viewPortSize.width / self.numberOfGridsPerRow;
-}
-
-- (CGFloat)gridCellWidth
-{
-    return self.viewPortSize.width / (self.numberOfGridsPerRow * self.numberOfColumnsPerGrid);
-}
-
-- (CGFloat)gridHeight
-{
-    return self.viewPortSize.height / self.numberOfGridsPerColumn;
-}
-
-- (CGFloat)gridCellHeight
-{
-    return self.viewPortSize.height / (self.numberOfGridsPerColumn * self.numberOfRowsPerGrid);
-}
-
-- (void)setViewPortSize:(CGSize)viewPortSize
-{
-    _viewPortSize = viewPortSize;
+    _numberOfColumnsPerRow = numberOfColumnsPerRow;
     
     self.needChangeCache = YES;
 }
 
-- (void)setNumberOfColumnsPerGrid:(NSInteger)numberOfColumnsPerGrid
+- (void)setNumberOfVisibleColumns:(CGFloat)numberOfVisibleColumns
 {
-    _numberOfColumnsPerGrid = numberOfColumnsPerGrid;
-    
-    self.needChangeCache = YES;
-}
-
-- (void)setNumberOfRowsPerGrid:(NSInteger)numberOfRowsPerGrid
-{
-    _numberOfRowsPerGrid = numberOfRowsPerGrid;
-    
-    self.needChangeCache = YES;
-}
-
-- (void)setNumberOfGridsPerColumn:(NSInteger)numberOfGridsPerColumn
-{
-    _numberOfGridsPerColumn = numberOfGridsPerColumn;
-    
-    self.needChangeCache = YES;
-}
-
-- (void)setNumberOfGridsPerRow:(NSInteger)numberOfGridsPerRow
-{
-    _numberOfGridsPerRow = numberOfGridsPerRow;
+    _numberOfVisibleColumns = numberOfVisibleColumns;
     
     self.needChangeCache = YES;
 }
 
 - (CGRect)gridRectForIndex:(NSInteger)index
 {
-    NSInteger numberOfElementsPerGrid = [self numberOfElementsPerGrid];
-    NSInteger gridIndex = index / numberOfElementsPerGrid;
-    NSInteger gridRowIndex = gridIndex / self.numberOfGridsPerRow;
-    NSInteger gridColumnIndex = gridIndex - (gridRowIndex * self.numberOfGridsPerRow);
-    NSInteger gridCellIndex = index - (gridIndex * numberOfElementsPerGrid);
-    NSInteger gridCellRowIndex = gridCellIndex / self.numberOfColumnsPerGrid;
-    NSInteger gridCellColumnIndex = gridCellIndex - (gridCellRowIndex * self.numberOfColumnsPerGrid);
-    NSInteger cellXOffset = (gridCellRowIndex % 2) * [self gridCellWidth] * 0.5 + self.viewPortSize.width * 0.5 - [self gridCellWidth] * 0.5;
-    NSInteger cellYOffset = self.viewPortSize.height * 0.5 - [self gridCellHeight] * 0.5;
+    CGSize cellSize = [self cellSize];
+    NSInteger gridRowIndex = index / self.numberOfColumnsPerRow;
+    NSInteger gridColumnIndex = index - (gridRowIndex * self.numberOfColumnsPerRow);
+    NSInteger cellXOffset = (gridRowIndex % 2) * cellSize.width * 0.5 + self.collectionView.bounds.size.width * 0.5 - cellSize.width * 0.5;
+    NSInteger cellYOffset = self.collectionView.bounds.size.height * 0.5 - cellSize.height * 0.5;
     
-    return CGRectMake(gridColumnIndex * [self gridWidth] + gridCellColumnIndex * [self gridCellWidth] + cellXOffset,
-                      gridRowIndex * [self gridHeight] + gridCellRowIndex * [self gridCellHeight] + cellYOffset,
-                      [self gridCellWidth],
-                      [self gridCellHeight]);
+    return CGRectMake(gridColumnIndex * cellSize.width + cellXOffset,
+                      gridRowIndex * cellSize.height + cellYOffset,
+                      cellSize.width,
+                      cellSize.height);
 }
 
 - (CGSize)collectionViewContentSize
 {
-    NSInteger numberOfGridRows = [self numberOfGridRows];
+    CGSize cellSize = [self cellSize];
+    NSInteger numberOfRows = [self numberOfRows];
     CGFloat width = 0;
     CGFloat height = 0;
     
-    width = self.viewPortSize.width * 2;
-    height = numberOfGridRows * [self gridHeight] + self.viewPortSize.height;
+    width = self.numberOfColumnsPerRow * cellSize.width + self.collectionView.bounds.size.width - cellSize.width * 0.5;
+    height = numberOfRows * cellSize.height + self.collectionView.bounds.size.height;
     
     return CGSizeMake(width, height);
 }
@@ -144,8 +95,6 @@
     if (self.needChangeCache) {
         self.needChangeCache = NO;
         
-        NSLog(@"prepare %d", [self.collectionView numberOfItemsInSection:0]);
-        
         NSMutableArray *allAttributes = [NSMutableArray arrayWithCapacity:[self.collectionView numberOfItemsInSection:0]];
         
         for (NSInteger index = 0; index < [self.collectionView numberOfItemsInSection:0]; index++) {
@@ -155,19 +104,6 @@
         
         self.attributes = allAttributes;
     }
-}
-
-- (NSInteger)indexForPoint:(CGPoint)point
-{
-    NSInteger cellColumnIndex = point.x / [self gridCellWidth];
-    NSInteger cellRowIndex = point.y / [self gridCellHeight];
-    NSInteger gridColumn = cellColumnIndex / self.numberOfColumnsPerGrid;
-    NSInteger gridRow = cellRowIndex / self.numberOfRowsPerGrid;
-    NSInteger gridCellColumn = cellColumnIndex - (gridColumn * self.numberOfColumnsPerGrid);
-    NSInteger gridCellRow = cellRowIndex - (gridRow * self.numberOfRowsPerGrid);
-    NSInteger index = gridRow * [self numberOfElementsPerGrid] * self.numberOfGridsPerRow + gridColumn * [self numberOfElementsPerGrid] + gridCellRow * self.numberOfColumnsPerGrid + gridCellColumn;
-    
-    return index;
 }
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect

@@ -14,10 +14,6 @@
 
 
 @interface AppleWatchLayout : UICollectionViewLayout
-@property (nonatomic) CGSize viewPortSize;
-@property (nonatomic) NSInteger numberOfElements;
-@property (nonatomic) NSInteger numberOfGridsPerRow;
-@property (nonatomic) NSInteger numberOfGridsPerColumn;
-@property (nonatomic) NSInteger numberOfColumnsPerGrid;
-@property (nonatomic) NSInteger numberOfRowsPerGrid;
+@property (nonatomic) CGFloat numberOfVisibleColumns;
+@property (nonatomic) NSInteger numberOfColumnsPerRow;
 @end

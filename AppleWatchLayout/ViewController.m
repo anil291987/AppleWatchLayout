@@ -23,12 +23,8 @@
     
     AppleWatchLayout *layout = [[AppleWatchLayout alloc] init];
     
-    layout.numberOfElements = 400;
-    layout.numberOfGridsPerRow = 3;
-    layout.numberOfGridsPerColumn = 4;
-    layout.numberOfColumnsPerGrid = 2;
-    layout.numberOfRowsPerGrid = 2;
-    layout.viewPortSize = self.view.bounds.size;
+    layout.numberOfVisibleColumns = 6;
+    layout.numberOfColumnsPerRow = 18;
     
     [self.collectionView registerClass:[TestCell class] forCellWithReuseIdentifier:@"TestCell"];
     
