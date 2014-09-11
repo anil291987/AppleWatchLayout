@@ -122,6 +122,7 @@
 		CB79B88719C0837C007B8A5A /* AppleWatchLayout */ = {
 			isa = PBXGroup;
 			children = (
+				CB9B569819C227A800669D1F /* iPad */,
 				CB1C47F219C1C68300510D5A /* TestCell.h */,
 				CB1C47F319C1C68400510D5A /* TestCell.m */,
 				CB79B89019C0837C007B8A5A /* AppDelegate.h */,
@@ -164,6 +165,13 @@
 				CB79B8A919C0837C007B8A5A /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CB9B569819C227A800669D1F /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = iPad;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -395,7 +403,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppleWatchLayout/AppleWatchLayout-Prefix.pch";
 				INFOPLIST_FILE = "AppleWatchLayout/AppleWatchLayout-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -408,7 +418,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppleWatchLayout/AppleWatchLayout-Prefix.pch";
 				INFOPLIST_FILE = "AppleWatchLayout/AppleWatchLayout-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
