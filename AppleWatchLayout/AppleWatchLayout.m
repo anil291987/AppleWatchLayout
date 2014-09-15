@@ -9,10 +9,6 @@
 
 #import "AppleWatchLayout.h"
 
-/*
- elements are layed out on a 5 x 6 grid, when a grid is full the next grid is to the right in rows of 3, then we go down
- 
- */
 
 
 @interface AppleWatchLayout ()
@@ -100,9 +96,29 @@
     CGFloat contentOffsetX = proposedContentOffset.x;
     CGFloat contentOffsetY = proposedContentOffset.y;
     CGSize cellSize = [self cellSize];
-    NSInteger columnIndex = round(contentOffsetX / cellSize.width);
-    NSInteger rowIndex = round(contentOffsetY / cellSize.height);
+
+    CGFloat rawRowIndex = contentOffsetY / cellSize.height;
+    NSInteger rowIndex = 0;
+    
+    if (velocity.y > 0) {
+        rowIndex = ceil(rawRowIndex);
+    } else if (velocity.y < 0) {
+        rowIndex = floor(rawRowIndex);
+    } else {
+        rowIndex = round(rawRowIndex);
+    }
+    
     NSInteger shiftedColumn = rowIndex % 2;
+    CGFloat rawColumIndex = (contentOffsetX - shiftedColumn * cellSize.width * 0.5) / cellSize.width;
+    NSInteger columnIndex = 0;
+    
+    if (velocity.x > 0) {
+        columnIndex = ceil(rawColumIndex);
+    } else if (velocity.x < 0) {
+        columnIndex = floor(rawColumIndex);
+    } else {
+        columnIndex = round(rawColumIndex);
+    }
     
     contentOffsetX = columnIndex * cellSize.width + shiftedColumn * cellSize.width * 0.5;
     contentOffsetY = rowIndex * cellSize.height;
@@ -132,8 +148,6 @@
 {
     NSMutableArray *visibleElements = [NSMutableArray array];
     
-//    CGSize cellSize = [self cellSize];
-//    CGFloat halfBoundsWidth = self.collectionView.bounds.size.width * 0.5;
     CGFloat sizeScaleNormalize = self.collectionView.bounds.size.width / 1.5;
     
     for (UICollectionViewLayoutAttributes *attributes in self.attributes) {
@@ -147,9 +161,6 @@
             CGFloat dist = sqrt(distX * distX + distY * distY);
             CGFloat sizeScale = dist / sizeScaleNormalize;
             
-//            CGFloat curve = 0;
-//            CGFloat sign = (distY >= 0)? -1 : 1;
-            
             if (sizeScale > 1) sizeScale = 1;
             sizeScale = 1 - sizeScale;
             
@@ -160,31 +171,6 @@
             attributes.transform = transform;
         }
     }
-    
-//    NSInteger startIndex = [self indexForPoint:rect.origin];
-//    NSInteger endIndex = [self indexForPoint:CGPointMake(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height)];
-//    NSMutableArray *allAttributes = [NSMutableArray arrayWithCapacity:endIndex - startIndex];
-//    
-//    NSLog(@"startIndex = %ld, endIndex = %ld", startIndex, endIndex);
-//    
-//    for (NSInteger index = startIndex; index < endIndex; index++) {
-//        UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]];
-//        
-//        [allAttributes addObject:attributes];
-//    }
-    
-    /*
-    @property (nonatomic) CGRect frame;
-    @property (nonatomic) CGPoint center;
-    @property (nonatomic) CGSize size;
-    @property (nonatomic) CATransform3D transform3D;
-    @property (nonatomic) CGRect bounds NS_AVAILABLE_IOS(7_0);
-    @property (nonatomic) CGAffineTransform transform NS_AVAILABLE_IOS(7_0);
-    @property (nonatomic) CGFloat alpha;
-    @property (nonatomic) NSInteger zIndex; // default is 0
-    @property (nonatomic, getter=isHidden) BOOL hidden; // As an optimization, UICollectionView might not create a view for items whose hidden attribute is YES
-    @property (nonatomic, retain) NSIndexPath *indexPath;
-     */
     
     return visibleElements;
 }

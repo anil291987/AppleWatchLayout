@@ -10,9 +10,6 @@
 #import <UIKit/UIKit.h>
 
 
-
-
-
 @interface AppleWatchLayout : UICollectionViewLayout
 @property (nonatomic) CGFloat numberOfVisibleColumns;
 @property (nonatomic) NSInteger numberOfColumnsPerRow;
