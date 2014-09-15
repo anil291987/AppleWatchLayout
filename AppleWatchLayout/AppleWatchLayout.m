@@ -30,6 +30,7 @@
         _needChangeCache = YES;
         _numberOfColumnsPerRow = 12;
         _numberOfVisibleColumns = 4;
+        _dropOffSpeed = 1.0;
     }
     
     return self;
@@ -88,6 +89,27 @@
     return CGSizeMake(width, height);
 }
 
+- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset
+{
+    return [self targetContentOffsetForProposedContentOffset:proposedContentOffset withScrollingVelocity:CGPointZero];
+}
+
+- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset
+                                 withScrollingVelocity:(CGPoint)velocity
+{
+    CGFloat contentOffsetX = proposedContentOffset.x;
+    CGFloat contentOffsetY = proposedContentOffset.y;
+    CGSize cellSize = [self cellSize];
+    NSInteger columnIndex = round(contentOffsetX / cellSize.width);
+    NSInteger rowIndex = round(contentOffsetY / cellSize.height);
+    NSInteger shiftedColumn = rowIndex % 2;
+    
+    contentOffsetX = columnIndex * cellSize.width + shiftedColumn * cellSize.width * 0.5;
+    contentOffsetY = rowIndex * cellSize.height;
+    
+    return CGPointMake(contentOffsetX, contentOffsetY);
+}
+
 - (void)prepareLayout
 {
     [super prepareLayout];
@@ -130,6 +152,8 @@
             
             if (sizeScale > 1) sizeScale = 1;
             sizeScale = 1 - sizeScale;
+            
+            sizeScale = pow(sizeScale, self.dropOffSpeed);
             
             CGAffineTransform transform = CGAffineTransformMakeScale(sizeScale, sizeScale);
             

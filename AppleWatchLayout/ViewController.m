@@ -23,8 +23,9 @@
     
     AppleWatchLayout *layout = [[AppleWatchLayout alloc] init];
     
-    layout.numberOfVisibleColumns = 5;
-    layout.numberOfColumnsPerRow = 15;
+    layout.numberOfVisibleColumns = 4;
+    layout.numberOfColumnsPerRow = 12;
+    layout.dropOffSpeed = 0.6;
     
     [self.collectionView registerClass:[TestCell class] forCellWithReuseIdentifier:@"TestCell"];
     
