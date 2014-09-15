@@ -25,7 +25,7 @@
     
     layout.numberOfVisibleColumns = 4;
     layout.numberOfColumnsPerRow = 12;
-    layout.dropOffSpeed = 0.6;
+    layout.sizeDropOffSpeed = 0.75;
     
     [self.collectionView registerClass:[TestCell class] forCellWithReuseIdentifier:@"TestCell"];
     

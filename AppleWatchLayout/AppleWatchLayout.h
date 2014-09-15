@@ -13,5 +13,5 @@
 @interface AppleWatchLayout : UICollectionViewLayout
 @property (nonatomic) CGFloat numberOfVisibleColumns;
 @property (nonatomic) NSInteger numberOfColumnsPerRow;
-@property (nonatomic) CGFloat dropOffSpeed;
+@property (nonatomic) CGFloat sizeDropOffSpeed;
 @end

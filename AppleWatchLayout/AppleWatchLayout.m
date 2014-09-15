@@ -26,7 +26,7 @@
         _needChangeCache = YES;
         _numberOfColumnsPerRow = 12;
         _numberOfVisibleColumns = 4;
-        _dropOffSpeed = 1.0;
+        _sizeDropOffSpeed = 1.0;
     }
     
     return self;
@@ -164,7 +164,7 @@
             if (sizeScale > 1) sizeScale = 1;
             sizeScale = 1 - sizeScale;
             
-            sizeScale = pow(sizeScale, self.dropOffSpeed);
+            sizeScale = pow(sizeScale, self.sizeDropOffSpeed);
             
             CGAffineTransform transform = CGAffineTransformMakeScale(sizeScale, sizeScale);
             
