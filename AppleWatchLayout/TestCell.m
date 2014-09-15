@@ -54,7 +54,7 @@
                         [UIColor colorWithRed:251/255.0 green:251/255.0 blue:251/255.0 alpha:1]];
     }
     
-    return appleColors[arc4random_uniform([appleColors count])];
+    return appleColors[arc4random_uniform((u_int32_t)[appleColors count])];
 }
 
 - (void)layoutSubviews
